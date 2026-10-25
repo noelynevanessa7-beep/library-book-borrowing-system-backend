@@ -1,4 +1,4 @@
-package auca.library_book_borrowing_system;
+package auca.library;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
