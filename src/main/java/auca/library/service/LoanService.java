@@ -22,6 +22,14 @@ public class LoanService {
     private LoanRepository loanRepo;
 
     public String saveLoan(Loan loan) {
+        if (loan.getLoanDate().isBefore(LocalDate.now())) {
+            return "Loan date cannot be in the past";
+        }
+        boolean busy = loanRepo.existsByLibrarianIdAndLoanDateAndStatusNot(loan.getLibrarian().getId(), loan.getLoanDate(), LoanStatus.REJECTED);
+        if (busy) {
+            return "Librarian already issues a loan on that date";
+        }
+        loan.setStatus(LoanStatus.REQUESTED);
         loanRepo.save(loan);
         return "Loan saved successfully";
     }
@@ -68,7 +76,30 @@ public class LoanService {
         return loanRepo.findByLoanDateBetweenOrderByLoanDateAsc(start, end);
     }
 
-
-
+    public String changeStatus(UUID id, LoanStatus newStatus) {
+        Optional<Loan> optional = loanRepo.findById(id);
+        if (optional.isEmpty()) {
+            return "The loan with that id does not exist";
+        }
+        Loan loan = optional.get();
+        LoanStatus current = loan.getStatus();
+        boolean allowed = false;
+        if (current == LoanStatus.REQUESTED) {
+            if (newStatus == LoanStatus.ISSUED || newStatus == LoanStatus.REJECTED) {
+                allowed = true;
+            }
+        } else if (current == LoanStatus.ISSUED) {
+            if (newStatus == LoanStatus.RETURNED || newStatus == LoanStatus.REJECTED) {
+                    allowed = true;
+            }
+        }
+        if (!allowed) {
+            return "Cannot change status from " + current + " to " + newStatus;
+        }
+        loan.setStatus(newStatus);
+        loanRepo.save(loan);
+        return "Loan status updated successfully";
+    }
+    
     
 }

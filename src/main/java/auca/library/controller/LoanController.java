@@ -24,7 +24,13 @@ public class LoanController {
 
     @PostMapping("/save")
     public ResponseEntity<String> saveLoan(@RequestBody Loan loan) {
-        return new ResponseEntity<>(loanServe.saveLoan(loan), HttpStatus.CREATED);
+        String msg = loanServe.saveLoan(loan);
+        HttpStatus status = HttpStatus.CREATED;
+        if (msg.contains("cannot be in the past")) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (msg.contains("already issues"))
+            status = HttpStatus.CONFLICT;
+        return new ResponseEntity<>(msg, status);
     }
 
     @GetMapping("/all")
@@ -71,5 +77,17 @@ public class LoanController {
         LocalDate startDate = LocalDate.parse(start);
         LocalDate endDate = LocalDate.parse(end);
         return new ResponseEntity<>(loanServe.getLoanBetween(startDate, endDate), HttpStatus.OK);
+    }
+
+    @PatchMapping ("/{id}/status")
+    public ResponseEntity<String> changeStatus(@PathVariable UUID id,@RequestParam LoanStatus status) {
+        String msg = loanServe.changeStatus(id, status);
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else if (!msg.endsWith("successfully")) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(msg, httpStatus);
     }
 }

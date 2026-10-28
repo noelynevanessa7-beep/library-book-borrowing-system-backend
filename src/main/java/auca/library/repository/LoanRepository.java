@@ -16,4 +16,6 @@ public interface LoanRepository extends JpaRepository<Loan, UUID> {
     List<Loan> findByStatusOrderByLoanDateAsc(LoanStatus status);
 
     List<Loan> findByLoanDateBetweenOrderByLoanDateAsc(LocalDate start, LocalDate end);
+
+    boolean existsByLibrarianIdAndLoanDateAndStatusNot(UUID librarianId, LocalDate loanDate, LoanStatus status);
 } 
