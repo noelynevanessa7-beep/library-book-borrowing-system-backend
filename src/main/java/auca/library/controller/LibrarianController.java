@@ -63,4 +63,27 @@ public class LibrarianController {
         return new ResponseEntity<>(librarianServe.getLibrariansBySecton(name), HttpStatus.OK);
     }
     
+    @PutMapping ("/{librarianId}/sections/{sectionId}")
+    public ResponseEntity<String> addSectionToLibrarian(@PathVariable UUID librarianId, @PathVariable UUID sectionId) {
+        String msg = librarianServe.addSectionToLibrarian(librarianId, sectionId);
+        HttpStatus status= HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (msg.contains("taken")) {
+            status = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity<>(msg, status);
+    }
+
+    @PatchMapping("/{librarianId}/desk")
+    public ResponseEntity<String> changeDesk(@PathVariable UUID librarianId, @RequestParam int deskNumber) {
+        String msg = librarianServe.changeDesk(librarianId, deskNumber);
+        HttpStatus status = HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (msg.contains("taken")) {
+            status = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity<>(msg, status);
+    }
 }

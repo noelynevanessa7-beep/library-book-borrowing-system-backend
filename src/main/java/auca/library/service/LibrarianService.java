@@ -7,14 +7,26 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import auca.library.domain.Desk;
+import auca.library.domain.Section;
 import auca.library.domain.Librarian;
+import auca.library.repository.DeskRepository;
+import auca.library.repository.SectionRepository;
 import auca.library.repository.LibrarianRepository;
+
 
 @Service 
 public class LibrarianService {
 
     @Autowired 
     private LibrarianRepository librarianRepo;
+
+    @Autowired 
+    private SectionRepository sectionRepo;
+
+    @Autowired 
+    private DeskRepository deskRepo;
+
 
     public String saveLibrarian(Librarian librarian) {
         librarianRepo.save(librarian);
@@ -56,6 +68,46 @@ public class LibrarianService {
 
     public List<Librarian> getLibrariansBySecton(String name) {
         return librarianRepo.findLibrariansBySection(name);
+    }
+
+    public String addSectionToLibrarian(UUID librarianId, UUID sectionId) {
+        Optional<Librarian> optionalLibrarian = librarianRepo.findById(librarianId);
+        if (optionalLibrarian.isEmpty()) {
+            return "The librarian with that id does not exist";
+        }
+        Optional<Section> optionalSection = sectionRepo.findById(sectionId);
+        if (optionalSection.isEmpty()) {
+            return "The section does not exist";
+        }
+        Librarian librarian = optionalLibrarian.get();
+        Section section = optionalSection.get();
+        for (Section s : librarian.getSections()) {
+            if (s.getId().equals(sectionId)) {
+                return "The librarian already has that section";
+            }
+        }
+        librarian.getSections().add(section);
+        librarianRepo.save(librarian);
+        return "Section added to the librarian";
+    }
+
+    public String changeDesk(UUID librarianId, int deskNumber) {
+        Optional<Librarian> optionalLibrarian = librarianRepo.findById(librarianId);
+        if (optionalLibrarian.isEmpty()) {
+            return "The librarian with that id does not exist";
+        }
+        Optional<Desk> optionalDesk = deskRepo.findByDeskNumber(deskNumber);
+        if (optionalDesk.isEmpty()) {
+            return "The desk with that deskNumber does not exist";
+        }
+        Desk desk = optionalDesk.get();
+        if (librarianRepo.existsByDeskIdAndIdNot(desk.getId(), librarianId)) {
+            return "The desk is taken by another librarian";
+        }
+        Librarian librarian = optionalLibrarian.get();
+        librarian.setDesk(desk);
+        librarianRepo.save(librarian);
+        return "Desk changed successfully";
     }
     
 }
