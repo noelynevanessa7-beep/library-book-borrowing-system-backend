@@ -57,5 +57,10 @@ public class LibrarianController {
         }
         return new ResponseEntity<>(msg, status);
     }
+
+    @GetMapping ("/by-section")
+    public ResponseEntity<List<Librarian>> getLibrarianBySection(@RequestParam String name) {
+        return new ResponseEntity<>(librarianServe.getLibrariansBySecton(name), HttpStatus.OK);
+    }
     
 }

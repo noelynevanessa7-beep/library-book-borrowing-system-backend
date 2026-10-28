@@ -62,5 +62,14 @@ public class StudentController {
     public ResponseEntity<List<Student>> getStudentsByLastName(@RequestParam String lastName) {
         return new ResponseEntity<>(studentServe.getStudentsByLastName(lastName), HttpStatus.OK);
     }
+
+    @GetMapping ("/of-librarian/{librarianId}")
+    public ResponseEntity<?> getStudentOfLibrarian(@PathVariable UUID librarianId) {
+        List<Student> students = studentServe.getStudentsOfLibrarian(librarianId);
+        if (students == null) {
+            return new ResponseEntity<>("The librarian with that id does not exist", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(students, HttpStatus.OK);
+    }
     
 }

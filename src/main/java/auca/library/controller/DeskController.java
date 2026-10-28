@@ -49,4 +49,9 @@ public class DeskController {
         return new ResponseEntity<>(msg, status);
     }
 
+    @GetMapping ("/free")
+    public ResponseEntity<List<Desk>> getFreeDesks() {
+        return new ResponseEntity<>(deskServe.getFreeDesks(), HttpStatus.OK);
+    }
+
 }

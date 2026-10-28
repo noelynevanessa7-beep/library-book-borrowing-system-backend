@@ -47,4 +47,8 @@ public class SectionService {
         sectionRepo.deleteById(id);
         return "Section deleted successfully";
     }
+
+    public List<Section> getUnusedSections() {
+        return sectionRepo.findUnusedSections();
+    }
 }

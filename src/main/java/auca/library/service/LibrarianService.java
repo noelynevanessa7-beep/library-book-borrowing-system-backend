@@ -53,5 +53,9 @@ public class LibrarianService {
         librarianRepo.deleteById(id);
         return "Librarian deleted successfully";
     }
+
+    public List<Librarian> getLibrariansBySecton(String name) {
+        return librarianRepo.findLibrariansBySection(name);
+    }
     
 }

@@ -57,4 +57,9 @@ public class SectionController {
         }
         return new ResponseEntity<>(msg, status);
     }
+
+    @GetMapping ("/unused")
+    public ResponseEntity<List<Section>> getUnusedSections() {
+        return new ResponseEntity<>(sectionServe.getUnusedSections(), HttpStatus.OK);
+    }
 }

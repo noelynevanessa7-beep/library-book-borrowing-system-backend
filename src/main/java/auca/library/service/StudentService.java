@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import auca.library.domain.Student;
+import auca.library.repository.LibrarianRepository;
 import auca.library.repository.StudentRepository;
 
 @Service 
@@ -15,6 +16,9 @@ public class StudentService {
 
     @Autowired 
     private StudentRepository studentRepo;
+
+    @Autowired 
+    private LibrarianRepository librarianRepo;
 
     public String saveStudent(Student student) {
         studentRepo.save(student);
@@ -53,6 +57,13 @@ public class StudentService {
 
     public List<Student> getStudentsByLastName(String lastName) {
         return studentRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
+
+    public List<Student> getStudentsOfLibrarian(UUID librarianId) {
+        if (!librarianRepo.existsById(librarianId)) {
+            return null;
+        }
+        return studentRepo.findStudentsOfLibrarian(librarianId);
     }
     
 }
