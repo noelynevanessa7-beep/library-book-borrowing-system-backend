@@ -24,6 +24,11 @@ public class StudentController {
         return new ResponseEntity<>(studentServe.saveStudent(student), HttpStatus.CREATED);
     }
 
+    @GetMapping ("/all")
+    public ResponseEntity<List<Student>> getAllStudents() {
+        return new ResponseEntity<>(studentServe.getAllStudents(), HttpStatus.OK);
+    }
+
     @GetMapping ("/{id}")
     public ResponseEntity<?> getStudentById(@PathVariable UUID id) {
         Optional<Student> student = studentServe.getStudentById(id);
@@ -51,6 +56,11 @@ public class StudentController {
             status = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(msg, status);
+    }
+
+    @GetMapping ("/by-last-name")
+    public ResponseEntity<List<Student>> getStudentsByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(studentServe.getStudentsByLastName(lastName), HttpStatus.OK);
     }
     
 }

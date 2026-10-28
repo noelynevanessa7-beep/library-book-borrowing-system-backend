@@ -3,6 +3,7 @@ package auca.library.controller;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import auca.library.domain.Loan;
+import auca.library.domain.LoanStatus;
 import auca.library.service.LoanService;
 
 @RestController 
@@ -57,5 +59,17 @@ public class LoanController {
             status = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(msg, status);
+    }
+
+    @GetMapping ("/by-status")
+    public ResponseEntity<List<Loan>> getLoansByStatus(@RequestParam  LoanStatus status) {
+        return new ResponseEntity<>(loanServe.getLoansByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping ("/between")
+    public ResponseEntity<List<Loan>> getLoansBetween(@RequestParam String start, @RequestParam String end) {
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);
+        return new ResponseEntity<>(loanServe.getLoanBetween(startDate, endDate), HttpStatus.OK);
     }
 }

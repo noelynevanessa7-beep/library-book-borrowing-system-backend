@@ -3,11 +3,16 @@ package auca.library.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import auca.library.domain.Loan;
+import auca.library.domain.LoanStatus;
 import auca.library.repository.LoanRepository;
 
 @Service 
@@ -54,5 +59,16 @@ public class LoanService {
         loanRepo.deleteById(id);
         return "Loan deleted successfully";
     }
+
+    public List<Loan> getLoansByStatus(LoanStatus status) {
+        return loanRepo.findByStatusOrderByLoanDateAsc(status);
+    }
+
+    public List<Loan> getLoanBetween(LocalDate start, LocalDate end) {
+        return loanRepo.findByLoanDateBetweenOrderByLoanDateAsc(start, end);
+    }
+
+
+
     
 }
