@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.transaction.annotation.Transactional;
 
 import auca.library.domain.Loan;
 import auca.library.domain.LoanStatus;
@@ -24,6 +25,12 @@ public class LoanService {
 
     @Autowired 
     private FineRepository fineRepo;
+
+    @Transactional 
+    public String cancelDay(UUID librarianId, LocalDate date) {
+        int count = loanRepo.cancelLoansOfDay(LoanStatus.REJECTED, librarianId, date, LoanStatus.RETURNED);
+        return count + "loans cancelled";
+    }
 
     public String saveLoan(Loan loan) {
         if (loan.getLoanDate().isBefore(LocalDate.now())) {
@@ -106,6 +113,10 @@ public class LoanService {
         loan.setStatus(newStatus);
         loanRepo.save(loan);
         return "Loan status updated successfully";
+    }
+
+    public List<Object[]> getLoanStats() {
+        return loanRepo.countLoanByStatus();
     }
     
     

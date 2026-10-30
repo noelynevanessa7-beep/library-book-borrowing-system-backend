@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -91,5 +92,15 @@ public class LoanController {
             httpStatus = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(msg, httpStatus);
+    }
+
+    @GetMapping ("/stats/by-status")
+    public ResponseEntity<List<Object[]>> getLoanStats() {
+        return new ResponseEntity<>(loanServe.getLoanStats(), HttpStatus.OK);
+    }
+
+    @PatchMapping ("/cancel-day")
+    public ResponseEntity<String> cancelDay(@RequestParam UUID librarianId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return new ResponseEntity<>(loanServe.cancelDay(librarianId, date), HttpStatus.OK);
     }
 }
