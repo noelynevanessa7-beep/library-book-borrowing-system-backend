@@ -7,8 +7,10 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,5 +104,13 @@ public class LoanController {
     @PatchMapping ("/cancel-day")
     public ResponseEntity<String> cancelDay(@RequestParam UUID librarianId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return new ResponseEntity<>(loanServe.cancelDay(librarianId, date), HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<Page<Loan>> getLoansPage(@RequestParam int page, @RequestParam int size, @RequestParam String sort) {
+        String[] parts = sort.split(",");
+        Sort.Direction direction = Sort.Direction.fromString(parts[1]);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(direction, parts[0]));
+        return new ResponseEntity<>(loanServe.getLoansPage(pageable), HttpStatus.OK);
     }
 }

@@ -29,4 +29,8 @@ public interface LoanRepository extends JpaRepository<Loan, UUID> {
     @Query ("UPDATE Loan l SET l.status = :rejected WHERE l.librarian.id = :librarianId AND l.loanDate = :date AND l.status <> :returned")
     int cancelLoansOfDay(@Param("rejected") LoanStatus rejected, @Param("librarianId") UUID librarianId, @Param("date") LocalDate date, @Param("returned") LoanStatus returned);
 
+    long countByLoanDate(LocalDate loanDate);
+
+    long countByStatus(LoanStatus status);
+
 } 

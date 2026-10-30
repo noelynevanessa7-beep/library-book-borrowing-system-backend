@@ -6,10 +6,10 @@ import java.util.UUID;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.transaction.annotation.Transactional;
 
 import auca.library.domain.Loan;
@@ -117,6 +117,10 @@ public class LoanService {
 
     public List<Object[]> getLoanStats() {
         return loanRepo.countLoanByStatus();
+    }
+
+    public Page<Loan> getLoansPage(Pageable pageable) {
+        return loanRepo.findAll(pageable);
     }
     
     
