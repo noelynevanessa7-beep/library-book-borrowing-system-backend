@@ -1,7 +1,7 @@
 # library-book-borrowing-system-backend
 
-Student name: Kalaki Noelyn Vanessa
-Student ID: 27540
+Student name: Kalaki Noelyn Vanessa  
+Student ID: 27540   
 Project name: Library Book Borrowing System (Mid-term exam, Web Technology)
 
 ## About
