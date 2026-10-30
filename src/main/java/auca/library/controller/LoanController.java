@@ -63,6 +63,8 @@ public class LoanController {
         HttpStatus status = HttpStatus.OK;
         if (msg.contains("does not exist")) {
             status = HttpStatus.NOT_FOUND;
+        } else if (msg.contains("has fines")) {
+            status = HttpStatus.CONFLICT;
         }
         return new ResponseEntity<>(msg, status);
     }

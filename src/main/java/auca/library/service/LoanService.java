@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import auca.library.domain.Loan;
 import auca.library.domain.LoanStatus;
+import auca.library.repository.FineRepository;
 import auca.library.repository.LoanRepository;
 
 @Service 
@@ -20,6 +21,9 @@ public class LoanService {
 
     @Autowired 
     private LoanRepository loanRepo;
+
+    @Autowired 
+    private FineRepository fineRepo;
 
     public String saveLoan(Loan loan) {
         if (loan.getLoanDate().isBefore(LocalDate.now())) {
@@ -63,6 +67,9 @@ public class LoanService {
     public String deleteLoan(UUID id) {
         if (!loanRepo.existsById(id)) {
             return "The loan with that id does not exist";
+        }
+        if (fineRepo.existsByLoanId(id)) {
+            return "That loan has fines, delete them first";
         }
         loanRepo.deleteById(id);
         return "Loan deleted successfully";
